@@ -84,3 +84,23 @@ $ git update-ref refs/tags/v1.0 cac0cab538b970a37ea1e769cbbde608743bc96d
 这就是轻量标签的全部内容——一个固定的引用。 然而，一个附注标签则更复杂一些。 若要创建一个附注标签，Git 会创建一个标签对象，并记录一个引用来指向该标签对象，而不是直接指向提交对象。 可以通过创建一个附注标签来验证这个过程（-a 选项指定了要创建的是一个附注标签）：
 
 $ git tag -a v1.1 1a410efbd13591db07496601ebc7a059dd55cfe9 -m 'test tag'
+9.Git 最初向磁盘中存储对象时所使用的格式被称为“松散（loose）”对象格式。 但是，Git 会时不时地将多个这些对象打包成一个称为“包文件（packfile）”的二进制文件，以节省空间和提高效率。 当版本库中有太多的松散对象，或者你手动执行 git gc 命令，或者你向远程服务器执行推送时，Git 都会这样做。 要看到打包过程，你可以手动执行 git gc 命令让 Git 对对象进行打包
+git verify-pack 这个底层命令可以让你查看已打包的内容：
+
+$ git verify-pack -v .git/objects/pack/pack-978e03944f5c581011e6998cd0e9e300009055
+10.git remote add origin https://github.com/schacon/simplegit-progit
+上述命令会在你的 .git/config 文件中添加一个小节，并在其中指定远程版本库的名称（origin）、URL 和一个用于获取操作的引用规格（refspec）：
+
+[remote "origin"]
+	url = https://github.com/schacon/simplegit-progit
+		fetch = +refs/heads/*:refs/remotes/origin/*
+
+$ git log origin/master
+$ git log remotes/origin/master
+$ git log refs/remotes/origin/master
+上面的三个命令作用相同，因为 Git 会把它们都扩展成 refs/remotes/origin/master。
+
+如果想让 Git 每次只拉取远程的 master 分支，而不是所有分支，可以把（引用规格的）获取那一行修改为：
+
+fetch = +refs/heads/master:refs/remotes/origin/master
+

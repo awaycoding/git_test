@@ -104,3 +104,16 @@ $ git log refs/remotes/origin/master
 
 fetch = +refs/heads/master:refs/remotes/origin/master
 
+11.Git 分支的本质：一个指向某一系列提交之首的指针或引用。若想在第二个提交上创建一个分支，可以这么做：
+
+$ git update-ref refs/heads/test cac0ca
+
+可以借助此命令来查看 HEAD 引用对应的值：
+
+$ git symbolic-ref HEAD
+refs/heads/master
+同样可以设置 HEAD 引用的值：
+
+$ git symbolic-ref HEAD refs/heads/test
+$ cat .git/HEAD
+ref: refs/heads/test
